@@ -1,0 +1,11 @@
+Handle input with Mac, Unix, or Windows line delimiters (CR, LF, or CRLF),
+when running on any of the 3 platforms.
+
+Print out details of the calculation of PTI, DEPI, etc. for easier auditing.
+
+Clean up variable names (Exner's not very consistent with his abbreviations,
+but he's better than I've been).
+
+More input validation (sanity-check columns against each other).
+
+Prettier output format (PDF? RTF? HTML?).

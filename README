@@ -1,0 +1,76 @@
+DESCRIPTION:
+
+This is a relatively quick-and-dirty script to assist with scoring
+a Rorshach ink-blot test using Exner's "Comprehensive System". The input
+is a tab-delimited text file (which can be created by Excel or any other
+spreadsheet program) with one response per line. The output is a scoring
+worksheet as a plain text file. For examples, see 01input.txt and
+01output-expected.txt in the t/data directory.
+
+USAGE:
+
+Invoke the program as:
+
+    rorshach.pl 01input.txt > 01output.txt
+
+The input file can optionally start with a header line,  which must start
+with the word "card" (case insensitive) in the first column. If the first
+line doesn't start with "card", it's assumed that there's no header line,
+and the first line is assumed to be the first response.
+
+The first response for each card must have the card number in upper-case
+roman numerals (i.e. I, II, III, IV, etc) or hindu-arabic numerals (i.e.
+1, 2, 3, 4, etc.). Subsequent responses for the same card can leave the
+card number blank, or can repeat the same card number.
+
+If the header line exists, and the second field of the header starts with
+"resp" (case insensitive), then the second field is assumed to be the
+response number. If there's no header line, or there is one but the
+second field doesn't start with "resp", then there is assumed not to be
+a response number column.
+
+The input fields are assumed to be:
+* Card number
+* Response number (optional)
+* Location and DQ
+* Location number (not used)
+* Determinant(s) and FQ
+* (2)
+* Content(s)
+* Pop
+* Z-score
+* Special Scores
+
+The algorithms were based on verbal descriptions of Exner's Comprehensive
+System, as described in Exner, 2003, and on brief reading of a few
+examples in the corresponding workbook, Exner, 2001.
+
+SEE ALSO:
+
+A similar service is offered by http://www.virtualpsychology.com/, but
+theirs is on-line only, using a web interface to enter the data, and
+requires signing up for an account, and as far as I can tell is not open
+source. Theirs also does more detailed validation of the codes against
+each other (checking to see if codes in different columns are consistent
+with each other).
+
+Another similar product is ROR-SCAN (http://ror-scan.com/index2.htm),
+which is commercial shrink-wrap software, and has been around since 1988.
+It costs over $500 (with a student discount), and is only available to
+"qualified professionals" (including students supervised by a licensed
+psychologist). ROR-SCAN apparently generates an entire written report,
+assembling canned text based on the results of the test.
+
+REFERENCES:
+
+http://en.wikipedia.org/wiki/Rorschach_test
+
+Exner, J. E. Jr. (2003). /The Rorschach: A Comprehensive System/ (4th ed.).
+Hoboken, NJ: John Wiley & Sons.
+http://books.google.com/books?id=4F5qAAAAMAAJ
+
+Exner, J. E. Jr. (2001). /A Rorschach Workbook for the Comprehensive System/,
+(5th ed.). Asheville, NC: Rorshach Workshops.
+http://books.google.com/books/about/A_Rorschach_workbook_for_the_comprehensi.html?id=ydbLPwAACAAJ).
+
+"A Comprehensive System" is a registered trademark of Doris E. Exner.

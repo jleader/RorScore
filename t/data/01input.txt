@@ -1,0 +1,31 @@
+Card	Resp #	Location and DQ	Loc #	Determinant(s) and FQ	(2)	Content(s)	Pop	Z-score	Spec. Scores
+I	1	W+		F-	2	Fd		4.0	"DV, MOR"
+	2	Wo		Fo		Ad		1.0	MOR
+	3	Wo		FYo		"A, Xy"	P	1.0	INC
+II	4	W+		CF.FC'.FV-		"Ad, Bl"		4.5	"ALOG, MOR"
+	5	WS+		FVu		Sc		4.5	FAB2
+	6	Wv		ma.YF.CFo		Ex			"MOR, AG, FAB"
+III	7	D+	9	Ma.CFo	2	"H, Sx"	P	4.0	GHR
+	8	D+	9	Mao	2	H	P	3.0	GHR
+	9	WS+		Mp.FD-		"H, Sc, An"	P	5.5	"FAB2, DR, PHR"
+	10	DSo		Mpu		H		4.5	"DV, GHR"
+	11	Do	2	Fu	2	Ad			MOR
+IV	12	Wo		Fo		"(A), Bt"		2.0	"DV2, MOR"
+	13	Wo		FYo		"(A), Bt"		2.0	DR2
+	14	Wo		YF.mpu		"A, Bt"		2.0	"MOR, DV2"
+V	15	Wo		Fo		A	P	1.0	
+	16	W+		mpu	2	A		2.5	MOR
+	17	Wo		Fo		A	P	1.0	DV 
+VI	18	Wv		ma.FMa-		"A, Ex"			"MOR, INC2"
+	19	Wo		FTo		Ad	P	2.5	
+VII	20	WSo		FV-		"Hd, Xy, Sx"		4.0	"PER, CONTAM, PHR"
+	21	Wo		Mao	2	"H, Sx"		2.5	"DV, GHR"
+VIII	22	Wv		CF.mpo		"An, Bl, Fi"			"MOR, PER"
+	23	DdSo		VFu		An		4.0	
+	24	Do	1	mpo	2	A	P		DR 
+	25	Do	7	FMp-		A			
+	26	Do	2	F-		A			
+IX	27	Wo		ma.FC-		"An, Ex"		5.5	"DV2, MOR, AG"
+	28	W+		FC.mpo		"Bt, Art"		5.5	MOR 
+X	29	W+		FC-	2	A		5.5	
+	30	Wo		FMp-	2	A		5.5	

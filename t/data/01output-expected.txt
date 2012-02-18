@@ -1,0 +1,192 @@
+Location Features:
+Zf      = 23
+ZSum    = 77.5
+ZEst    = 77
+
+W       = 22
+D       = 7
+W+D     = 29
+Dd      = 1
+S       = 5
+
+DQ
++       = 9
+o       = 18
+v/+     = 0
+v       = 3
+
+Form Quality:
+        FQx     MQual   W+D
+   +    =  0    =  0    =  0
+   o    = 14    =  3    = 14
+   u    =  6    =  1    =  5
+   -    = 10    =  1    = 10
+none    =  0    =  0    =  0
+
+Determinants:
+Blends
+CF.FC'.FV
+m.YF.CF
+M.CF
+M.FD
+YF.m
+m.FM
+CF.m
+m.FC
+FC.m
+
+Single
+       M = 3
+      FM = 2
+       m = 2
+      FC = 1
+      CF = 0
+       C = 0
+      Cn = 0
+     FC' = 0
+     C'F = 0
+      C' = 0
+      FT = 1
+      TF = 0
+       T = 0
+      FV = 2
+      VF = 1
+       V = 0
+      FY = 2
+      YF = 0
+       Y = 0
+      Fr = 0
+      rF = 0
+      FD = 0
+       F = 7
+
+(2)     = 9
+
+Contents:
+       H = 5
+     (H) = 0
+      Hd = 1
+    (Hd) = 0
+      Hx = 0
+       A = 11
+     (A) = 2
+      Ad = 4
+    (Ad) = 0
+      An = 4
+     Art = 1
+      Ay = 0
+      Bl = 2
+      Bt = 4
+      Cg = 0
+      Cl = 0
+      Ex = 3
+      Fd = 1
+      Fi = 1
+      Ge = 0
+      Hh = 0
+      Ls = 0
+      Na = 0
+      Sc = 2
+      Sx = 3
+      Xy = 2
+      Id = 0
+
+Approach:
+    I   W.W.W
+   II   W.WS.W
+  III   D.D.WS.DS.D
+   IV   W.W.W
+    V   W.W.W
+   VI   W.W
+  VII   WS.W
+ VIII   W.DdS.D.D.D
+   IX   W.W
+    X   W.W
+
+Special Scores:
+          Lv1   Lv2
+  DV    =  4 x1   3 x2
+ INC    =  1 x2   1 x4
+  DR    =  2 x3   1 x6
+ FAB    =  1 x4   2 x7
+ALOG    =  1 x5
+ CON    =  1 x7
+Raw Sum6  = 17
+Wgtd Sum6 = 58
+
+AB      =  0     GHR =  4
+AG      =  2     PHR =  2
+COP     =  0     MOR = 12
+CP      =  0     PER =  2
+                 PSV =  0
+
+Ratios, Percentages, and Derivations
+R = 30          L      = 7 / 23 = 0.304347826086957
+EB = 5 : 5.5    EA     = 10.5    EBPer = -
+eb = 11 : 10    es     = 21      D = -4
+                Adj es = 11  Adj D = 0
+
+FM = 3    SumC' = 1   SumT = 1
+m  = 8    SumV  = 4   SumY = 4
+
+a:p     = 7 : 9
+Ma:Mp   = 3 : 2
+2AB+Art+Ay = 1
+MOR     = 12
+
+Sum6    = 17
+Lv2     = 7
+WSum6   = 58
+M-      = 1
+Mnone   = 0
+
+
+FC:CF+C     = 3 : 4
+Pure C      = 0
+SumC':WSumC = 1 : 5.5
+Afr         = 0.428571428571429
+S           = 5
+Blends:R    = 9 : 30
+CP          =  0
+
+XA%     = 0.666666666666667
+WDA%    = 0.655172413793103
+X-%     = 0.333333333333333
+S-      = 2
+P       = 8
+X+%     = 0
+Xu%     = 0.2
+
+Zf      = 23
+W:D:Dd  = 22 : 7 : 1
+W:M     = 22 : 5
+Zd      = 0.5
+PSV     =  0
+DQ+     = 9
+DQv     = 3
+
+COP =  0 AG =  2
+GHR:PHR     =  4 :  2
+a:p         = 7 : 9
+Food        = 1
+SumT        = 1
+Human Cont  = 6
+Pure H      = 5
+PER         =  2
+Isol Indx   = 0.133333333333333
+
+
+3r+(2)/R        = 0.3
+Fr+rF           = 0
+SumV            = 4
+FD              = 1
+An+Xy           = 6
+MOR             = 12
+H:(H)+Hd+(Hd)   = 5 : 1
+
+PTI     = 4
+DEPI    = 6
+CDI     = 3
+S-Con   = 8
+HVI     = No
+OBS     = No
