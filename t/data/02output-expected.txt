@@ -47,10 +47,10 @@ Single
       FT = 0
       TF = 0
        T = 0
-      FV = 1
+      FV = 0
       VF = 0
        V = 0
-      FY = 0
+      FY = 1
       YF = 0
        Y = 0
       Fr = 0
@@ -103,9 +103,9 @@ Approach:
 
 Special Scores:
           Lv1   Lv2
-  DV    =  0 x1   0 x2
- INC    =  0 x2   1 x4
-  DR    =  0 x3   0 x6
+  DV    =  1 x1   0 x2
+ INC    =  1 x2   1 x4
+  DR    =  3 x3   0 x6
  FAB    =  0 x4   1 x7
 ALOG    =  0 x5
  CON    =  0 x7
@@ -125,7 +125,7 @@ eb = 5 : 3    es     = 8      D = 2
                 Adj es = 8  Adj D = 2
 
 FM = 4    SumC' = 1   SumT = 0
-m  = 1    SumV  = 2   SumY = 0
+m  = 1    SumV  = 1   SumY = 1
 
 a:p     = 13 : 3
 Ma:Mp   = 9 : 2
@@ -176,7 +176,7 @@ Isol Indx   = 0
 
 3r+(2)/R        = 0.722222222222222
 Fr+rF           = 0
-SumV            = 2
+SumV            = 1
 FD              = 1
 An+Xy           = 1
 MOR             =  0
@@ -185,6 +185,6 @@ H:(H)+Hd+(Hd)   = 6 : 2
 PTI     = 1
 DEPI    = 2
 CDI     = 0
-S-Con   = 4
+S-Con   = 3
 HVI     = No
 OBS     = No

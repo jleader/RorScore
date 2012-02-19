@@ -7,7 +7,7 @@ III	5	D+	1	Mao	2	"H, Hh"	P	3.0	"INCOM2, COP, GHR"
 	6	Do	7	Fo		An			DR1
 IV	7	Do	7	Mpo		(H)	P		GHR
 V	8	Wo	1	Mao		A		1.0	DR1
-VI	9	Dd+	99	FV-	2	Sc		2.5	"INCOM1, COP"
+VI	9	Dd+	99	FY-	2	Sc		2.5	"INCOM1, COP"
 	10	Dd+	99	Mpu	2	A		2.5	
 VII	11	W+	1	Ma.mao	2	"H, Cg"	P	2.5	"COP, GHR"
 	12	Dd+	22	Mau	2	H		1.0	"COP, GHR"

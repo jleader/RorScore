@@ -98,7 +98,7 @@ Approach:
 Special Scores:
           Lv1   Lv2
   DV    =  0 x1   0 x2
- INC    =  0 x2   1 x4
+ INC    =  1 x2   1 x4
   DR    =  0 x3   0 x6
  FAB    =  0 x4   0 x7
 ALOG    =  0 x5

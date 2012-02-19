@@ -24,21 +24,21 @@ my @contents = ('H', '(H)', 'Hd', '(Hd)', 'Hx', 'A', '(A)', 'Ad', '(Ad)',
     qw(An Art Ay Bl Bt Cg Cl Ex Fd Fi Ge Hh Ls Na Sc Sx Xy Id));
 my %contents = map { $_ => 1 } @contents;
 
-my %specialsynonyms = (
-    CONTAM => 'CON',
-    INCOM1 => 'INC1',
-    INCOM2 => 'INC2',
-    FABCOM1 => 'FAB1',
-    FABCOM2 => 'FAB2'
-);
 my %special1 = (DV=>1, INC=>2, DR=>3, FAB=>4, ALOG=>5, CON=>7);
 my @special1 = keys %special1;
 my %special2 = (DV=>2, INC=>4, DR=>6, FAB=>7);
 my @special0 = qw(AB AG COP CP GHR PHR MOR PER PSV);
 my %special = (%special1,
-               (map { $_ . '1' => $special1{$_} } @special1),
                (map { $_ . '2' => $special2{$_} } keys %special2),
                (map { $_ => 0 } @special0));
+my %specialsynonyms = (
+    CONTAM  => 'CON',
+    INCOM1  => 'INC',
+    INCOM2  => 'INC2',
+    FABCOM1 => 'FAB',
+    FABCOM2 => 'FAB2',
+    map { $_ . '1' => $_ } @special1,
+);
 
 my ($hasresp, $cardnum, $respnum);
 my @resps = (0) x 11;
