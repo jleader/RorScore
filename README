@@ -1,17 +1,18 @@
 DESCRIPTION:
 
-This is a relatively quick-and-dirty script to assist with scoring
-a Rorshach ink-blot test using Exner's "Comprehensive System". The input
-is a tab-delimited text file (which can be created by Excel or any other
-spreadsheet program) with one response per line. The output is a scoring
-worksheet as a plain text file. For examples, see 01input.txt and
-01output-expected.txt in the t/data directory.
+This is a relatively quick-and-dirty script to create a strctural
+summary from a score sheet for a Rorschach ink-blot test using Exner's
+"Comprehensive System". The input is a score sheet as a tab-delimited
+text file (which can be created by Excel or any other spreadsheet
+program) with one response per line. The output is a structural
+summary  worksheet as a plain text file. For examples, see the
+XXinput.txt and XXoutput-expected.txt files in the t/data directory.
 
 USAGE:
 
 Invoke the program as:
 
-    rorshach.pl 01input.txt > 01output.txt
+    rorschach.pl 01input.txt > 01output.txt
 
 The input file can optionally start with a header line,  which must start
 with the word "card" (case insensitive) in the first column. If the first
@@ -70,7 +71,7 @@ Hoboken, NJ: John Wiley & Sons.
 http://books.google.com/books?id=4F5qAAAAMAAJ
 
 Exner, J. E. Jr. (2001). /A Rorschach Workbook for the Comprehensive System/,
-(5th ed.). Asheville, NC: Rorshach Workshops.
+(5th ed.). Asheville, NC: Rorschach Workshops.
 http://books.google.com/books/about/A_Rorschach_workbook_for_the_comprehensi.html?id=ydbLPwAACAAJ).
 
 "A Comprehensive System" is a registered trademark of Doris E. Exner.
