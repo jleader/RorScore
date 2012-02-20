@@ -10,348 +10,353 @@ use warnings;
 # \t 2 \t Wo \t  \t Fo \t  \t Ad \t  \t 1 \t MOR
 # (spaces added around the tabs for easier readability)
 
-my @romans = qw(0 I II III IV V VI VII VIII IX X);
-my %romans;
-foreach my $i (0..$#romans) {
-    $romans{$romans[$i]} = $i;
-}
+print main(shift) unless caller;
 
-my @determinants = (qw(M FM m FC CF C Cn), "FC'", "C'F", "C'",
-    qw(FT TF T FV VF V FY YF Y Fr rF FD F));
-my %isdet = map { $_ => 1 } @determinants;
+sub main {
+    my ($infname) = @_;
+    my @romans = qw(0 I II III IV V VI VII VIII IX X);
+    my %romans;
+    foreach my $i (0..$#romans) {
+        $romans{$romans[$i]} = $i;
+    }
 
-my @contents = ('H', '(H)', 'Hd', '(Hd)', 'Hx', 'A', '(A)', 'Ad', '(Ad)',
-    qw(An Art Ay Bl Bt Cg Cl Ex Fd Fi Ge Hh Ls Na Sc Sx Xy Id));
-my %contents = map { $_ => 1 } @contents;
+    my @determinants = (qw(M FM m FC CF C Cn), "FC'", "C'F", "C'",
+        qw(FT TF T FV VF V FY YF Y Fr rF FD F));
+    my %isdet = map { $_ => 1 } @determinants;
 
-my %special1 = (DV=>1, INC=>2, DR=>3, FAB=>4, ALOG=>5, CON=>7);
-my @special1 = keys %special1;
-my %special2 = (DV=>2, INC=>4, DR=>6, FAB=>7);
-my @special0 = qw(AB AG COP CP GHR PHR MOR PER PSV);
-my %special = (%special1,
-               (map { $_ . '2' => $special2{$_} } keys %special2),
-               (map { $_ => 0 } @special0));
-my %specialsynonyms = (
-    CONTAM  => 'CON',
-    INCOM1  => 'INC',
-    INCOM2  => 'INC2',
-    FABCOM1 => 'FAB',
-    FABCOM2 => 'FAB2',
-    map { $_ . '1' => $_ } @special1,
-);
+    my @contents = ('H', '(H)', 'Hd', '(Hd)', 'Hx', 'A', '(A)', 'Ad', '(Ad)',
+        qw(An Art Ay Bl Bt Cg Cl Ex Fd Fi Ge Hh Ls Na Sc Sx Xy Id));
+    my %contents = map { $_ => 1 } @contents;
 
-my ($hasresp, $cardnum, $respnum);
-my @resps = (0) x 11;
-my ($Zf, $ZSum, $W, $D, $Dd, $S, %DQ, %FQ, %MQ, %WDQ,
-    %ap, %Map, @blends, $twos,
-    @approaches,
-    $raw6, $weight6, $popular);
-my %ccounts = map { $_ => 0 } @contents;
-my %sc = map { $_ => 0 }
-         (@special1, @special0, map { $_ . '2' } keys %special2);
-my $sminus = 0;
-my %singles = map { $_ => 0 } @determinants;
-my %mults = map { $_ => 0 } @determinants;
-while (<>) {
-    my @fields = split /\t/;
-    #print "DEBUG: fields=<@fields>\n";
-    if ($. == 1 && $fields[0] =~ /^ \s* card /ix) {
-        $hasresp = !!($fields[1] =~ /^ \s* resp /ix);
-        #print "DEBUG hasresp=$hasresp\n";
-        next;
+    my %special1 = (DV=>1, INC=>2, DR=>3, FAB=>4, ALOG=>5, CON=>7);
+    my @special1 = keys %special1;
+    my %special2 = (DV=>2, INC=>4, DR=>6, FAB=>7);
+    my @special0 = qw(AB AG COP CP GHR PHR MOR PER PSV);
+    my %special = (%special1,
+                   (map { $_ . '2' => $special2{$_} } keys %special2),
+                   (map { $_ => 0 } @special0));
+    my %specialsynonyms = (
+        CONTAM  => 'CON',
+        INCOM1  => 'INC',
+        INCOM2  => 'INC2',
+        FABCOM1 => 'FAB',
+        FABCOM2 => 'FAB2',
+        map { $_ . '1' => $_ } @special1,
+    );
+
+    my ($hasresp, $cardnum, $respnum);
+    my @resps = (0) x 11;
+    my ($Zf, $ZSum, $W, $D, $Dd, $S, %DQ, %FQ, %MQ, %WDQ,
+        %ap, %Map, @blends, $twos,
+        @approaches,
+        $raw6, $weight6, $popular);
+    my %ccounts = map { $_ => 0 } @contents;
+    my %sc = map { $_ => 0 }
+             (@special1, @special0, map { $_ . '2' } keys %special2);
+    my $sminus = 0;
+    my %singles = map { $_ => 0 } @determinants;
+    my %mults = map { $_ => 0 } @determinants;
+    open my $inf, '<', $infname or die "Unable to read from $infname: $!";
+    while (<$inf>) {
+        my @fields = split /\t/;
+        #print "DEBUG: fields=<@fields>\n";
+        if ($. == 1 && $fields[0] =~ /^ \s* card /ix) {
+            $hasresp = !!($fields[1] =~ /^ \s* resp /ix);
+            #print "DEBUG hasresp=$hasresp\n";
+            next;
+        }
+        else {
+            ++$respnum;
+            if ($fields[0] !~ /^ \s* $/x) {
+                # new card
+                #print "DEBUG: field0=$fields[0]\n";
+                my $newcardnum = $romans{$fields[0]} || $fields[0];
+                ++$cardnum;
+                die "Mis-orderd cards: $fields[0], expected $romans[$cardnum]"
+                    unless $cardnum == $newcardnum;
+                $cardnum = $newcardnum;
+                #print "DEBUG: new card $cardnum\n";
+            }
+            ++$resps[$cardnum];
+            die 'Missing first card number' unless $cardnum;
+            die "Bad response number $fields[1], expected $respnum"
+                if $hasresp && $respnum != $fields[1];
+            splice @fields, 0, ($hasresp ? 2 : 1);
+
+            # strip whitespace and enclosing double-quotes
+            @fields = map { s/\s+//g; s/^"(.*)"$/$1/; $_ } @fields;
+            #print "DEBUG: clean fields=<@fields>\n";
+
+            my ($location, $locno, $detsfq, $two, $content, $pop,
+                $zscore, $specscores, @extras) = @fields;
+            warn scalar(@extras) . ' extra fields' if @extras;
+
+            $location =~ m{^ (W|D|Dd) (S?) (\+|o|v/\+|v) $}x
+                or die 'Bad location/DQ column';
+            my ($loc, $loc_s, $dq) = ($1, $2, $3);
+
+            my $hasW  = !!($loc eq 'W');
+            my $hasD  = !!($loc eq 'D');
+            my $hasDd = !!($loc eq 'Dd');
+            my $hasS  = !!($loc_s eq 'S');
+            $W  += $hasW;
+            $D  += $hasD;
+            $Dd += $hasDd;
+            $S  += $hasS;
+
+            $DQ{p}  += !!($dq eq '+');
+            $DQ{o}  += !!($dq eq 'o');
+            $DQ{vp} += !!($dq eq 'v/+');
+            $DQ{v}  += !!($dq eq 'v');
+
+            push @{$approaches[$cardnum]}, $loc . $loc_s;
+
+            $detsfq =~ /^ ([aCDFmMn'prTVY.]*) ([+ou-]?) $/x
+                or die 'Bad determinants/FQ column';
+            my ($dets, $fq) = ($1, $2);
+            my @dets = split /\./, $dets;
+            foreach (@dets) {
+                # strip out and count superscript a or p
+                if (s/^ (m|M|FM) ([ap]) $/$1/x) {
+                    ++$ap{$2};
+                    ++$Map{$2} if $1 eq 'M';
+                }
+            }
+            my @baddets = grep { !$isdet{$_} } @dets;
+            die 'Invalid determinants: ' . join('.', @baddets) if @baddets;
+            if (@dets == 1) {
+                ++$singles{$dets[0]};
+                ++$mults{$dets[0]};
+            }
+            elsif (@dets > 1) {
+                foreach my $d (@dets) {
+                    ++$mults{$d};
+                }
+                push @blends, join '.', @dets;
+            }
+
+            my $hasp = !!($fq eq '+');
+            my $haso = !!($fq eq 'o');
+            my $hasu = !!($fq eq 'u');
+            my $hasm = !!($fq eq '-');
+            my $hasn = !($hasp || $haso || $hasu || $hasm);
+
+            $FQ{p} += $hasp;
+            $FQ{o} += $haso;
+            $FQ{u} += $hasu;
+            $FQ{m} += $hasm;
+            $FQ{n} += $hasn;
+
+            # wrong, only if a single node matches M
+            if (grep { /^M$/ } @dets) {
+                $MQ{p} += $hasp;
+                $MQ{o} += $haso;
+                $MQ{u} += $hasu;
+                $MQ{m} += $hasm;
+                $MQ{n} += $hasn;
+            }
+
+            if ($hasW || $hasD) {
+                $WDQ{p} += $hasp;
+                $WDQ{o} += $haso;
+                $WDQ{u} += $hasu;
+                $WDQ{m} += $hasm;
+                $WDQ{n} += $hasn;
+            }
+
+            $two =~ /^ (2?) $/x or die "Bad (2) column: $two";
+            $twos += !!$1;
+
+            my @conts = split /,/, $content;
+            my @badconts = grep { !$contents{$_} } @conts;
+            die 'Invalid contents: ' . join('.', @badconts) if @badconts;
+            foreach my $cont (@conts) {
+                ++$ccounts{$cont};
+            }
+
+            $pop =~ /^ (P?) $/x or die "Bad Pop column: $pop";
+            $popular += !!$1;
+
+            ++$Zf if $zscore;
+            $ZSum += $zscore||0;
+
+            my @specs = map { $specialsynonyms{$_} || $_ }
+                        split /,/, $specscores;
+            my @badspecs = grep { !exists($special{$_}) } @specs;
+            die 'Invalid special scores: ' . join('.', @badspecs) if @badspecs;
+            foreach my $spec (@specs) {
+                ++$sc{$spec};
+                $raw6 += $special{$spec} > 0;
+                $weight6 += $special{$spec};
+            }
+
+            $sminus += $hasS && $hasm;
+        }
+    }
+
+    my $ZEst = zest_table($Zf);
+
+    my $W_D = $W + $D;
+
+    my %qx = (p=>'+', m=>'-', n=>'none');
+    my $fq = join "\n", map {
+            sprintf("%4s    = %2d    = %2d    = %2d",
+                    $qx{$_}||$_, $FQ{$_}, $MQ{$_}, $WDQ{$_});
+        } qw(p o u m n);
+
+    my $blends = join "\n", @blends;
+
+    my $singles = join "\n", map {
+            sprintf("%8s = %d", $_, $singles{$_}||0)
+        } @determinants;
+
+    my $ccounts = join "\n", map {
+            sprintf("%8s = %d", $_, $ccounts{$_}||0)
+        } @contents;
+
+    my $approach = join "\n", map {
+        sprintf("%5s   %s", $romans[$_], join('.', @{$approaches[$_]}));
+    } 1..$#approaches;
+
+    my $speciallist2 = join "\n", map {
+        sprintf("%4s    = %2d x%1d  %2d x%1d", $_, $sc{$_}, $special1{$_},
+                                               $sc{$_ . '2'}, $special2{$_})
+    } qw(DV INC DR FAB);
+    my $speciallist1 = join "\n", map {
+        sprintf("%4s    = %2d x%1d", $_, $sc{$_}, $special1{$_})
+    } qw(ALOG CON);
+
+    my $lambdadenom = $respnum - $mults{F};
+    my $lambda = $mults{F} / $lambdadenom;
+    my $WSumC = 0.5 * $mults{FC} + $mults{CF} + 1.5 * $mults{C};
+    my ($EBmin, $EBmax);
+    if ($WSumC > $mults{M}) {
+        $EBmin = $mults{M};
+        $EBmax = $WSumC;
     }
     else {
-        ++$respnum;
-        if ($fields[0] !~ /^ \s* $/x) {
-            # new card
-            #print "DEBUG: field0=$fields[0]\n";
-            my $newcardnum = $romans{$fields[0]} || $fields[0];
-            ++$cardnum;
-            die "Mis-orderd cards: $fields[0], expected $romans[$cardnum]"
-                unless $cardnum == $newcardnum;
-            $cardnum = $newcardnum;
-            #print "DEBUG: new card $cardnum\n";
-        }
-        ++$resps[$cardnum];
-        die 'Missing first card number' unless $cardnum;
-        die "Bad response number $fields[1], expected $respnum"
-            if $hasresp && $respnum != $fields[1];
-        splice @fields, 0, ($hasresp ? 2 : 1);
-
-        # strip whitespace and enclosing double-quotes
-        @fields = map { s/\s+//g; s/^"(.*)"$/$1/; $_ } @fields;
-        #print "DEBUG: clean fields=<@fields>\n";
-
-        my ($location, $locno, $detsfq, $two, $content, $pop,
-            $zscore, $specscores, @extras) = @fields;
-        warn scalar(@extras) . ' extra fields' if @extras;
-
-        $location =~ m{^ (W|D|Dd) (S?) (\+|o|v/\+|v) $}x
-            or die 'Bad location/DQ column';
-        my ($loc, $loc_s, $dq) = ($1, $2, $3);
-
-        my $hasW  = !!($loc eq 'W');
-        my $hasD  = !!($loc eq 'D');
-        my $hasDd = !!($loc eq 'Dd');
-        my $hasS  = !!($loc_s eq 'S');
-        $W  += $hasW;
-        $D  += $hasD;
-        $Dd += $hasDd;
-        $S  += $hasS;
-
-        $DQ{p}  += !!($dq eq '+');
-        $DQ{o}  += !!($dq eq 'o');
-        $DQ{vp} += !!($dq eq 'v/+');
-        $DQ{v}  += !!($dq eq 'v');
-
-        push @{$approaches[$cardnum]}, $loc . $loc_s;
-
-        $detsfq =~ /^ ([aCDFmMn'prTVY.]*) ([+ou-]?) $/x
-            or die 'Bad determinants/FQ column';
-        my ($dets, $fq) = ($1, $2);
-        my @dets = split /\./, $dets;
-        foreach (@dets) {
-            # strip out and count superscript a or p
-            if (s/^ (m|M|FM) ([ap]) $/$1/x) {
-                ++$ap{$2};
-                ++$Map{$2} if $1 eq 'M';
-            }
-        }
-        my @baddets = grep { !$isdet{$_} } @dets;
-        die 'Invalid determinants: ' . join('.', @baddets) if @baddets;
-        if (@dets == 1) {
-            ++$singles{$dets[0]};
-            ++$mults{$dets[0]};
-        }
-        elsif (@dets > 1) {
-            foreach my $d (@dets) {
-                ++$mults{$d};
-            }
-            push @blends, join '.', @dets;
-        }
-
-        my $hasp = !!($fq eq '+');
-        my $haso = !!($fq eq 'o');
-        my $hasu = !!($fq eq 'u');
-        my $hasm = !!($fq eq '-');
-        my $hasn = !($hasp || $haso || $hasu || $hasm);
-
-        $FQ{p} += $hasp;
-        $FQ{o} += $haso;
-        $FQ{u} += $hasu;
-        $FQ{m} += $hasm;
-        $FQ{n} += $hasn;
-
-        # wrong, only if a single node matches M
-        if (grep { /^M$/ } @dets) {
-            $MQ{p} += $hasp;
-            $MQ{o} += $haso;
-            $MQ{u} += $hasu;
-            $MQ{m} += $hasm;
-            $MQ{n} += $hasn;
-        }
-
-        if ($hasW || $hasD) {
-            $WDQ{p} += $hasp;
-            $WDQ{o} += $haso;
-            $WDQ{u} += $hasu;
-            $WDQ{m} += $hasm;
-            $WDQ{n} += $hasn;
-        }
-
-        $two =~ /^ (2?) $/x or die "Bad (2) column: $two";
-        $twos += !!$1;
-
-        my @conts = split /,/, $content;
-        my @badconts = grep { !$contents{$_} } @conts;
-        die 'Invalid contents: ' . join('.', @badconts) if @badconts;
-        foreach my $cont (@conts) {
-            ++$ccounts{$cont};
-        }
-
-        $pop =~ /^ (P?) $/x or die "Bad Pop column: $pop";
-        $popular += !!$1;
-
-        ++$Zf if $zscore;
-        $ZSum += $zscore||0;
-
-        my @specs = map { $specialsynonyms{$_} || $_ }
-                    split /,/, $specscores;
-        my @badspecs = grep { !exists($special{$_}) } @specs;
-        die 'Invalid special scores: ' . join('.', @badspecs) if @badspecs;
-        foreach my $spec (@specs) {
-            ++$sc{$spec};
-            $raw6 += $special{$spec} > 0;
-            $weight6 += $special{$spec};
-        }
-
-        $sminus += $hasS && $hasm;
+        $EBmin = $WSumC;
+        $EBmax = $mults{M};
     }
-}
-
-my $ZEst = zest_table($Zf);
-
-my $W_D = $W + $D;
-
-my %qx = (p=>'+', m=>'-', n=>'none');
-my $fq = join "\n", map {
-        sprintf("%4s    = %2d    = %2d    = %2d",
-                $qx{$_}||$_, $FQ{$_}, $MQ{$_}, $WDQ{$_});
-    } qw(p o u m n);
-
-my $blends = join "\n", @blends;
-
-my $singles = join "\n", map {
-        sprintf("%8s = %d", $_, $singles{$_}||0)
-    } @determinants;
-
-my $ccounts = join "\n", map {
-        sprintf("%8s = %d", $_, $ccounts{$_}||0)
-    } @contents;
-
-my $approach = join "\n", map {
-    sprintf("%5s   %s", $romans[$_], join('.', @{$approaches[$_]}));
-} 1..$#approaches;
-
-my $speciallist2 = join "\n", map {
-    sprintf("%4s    = %2d x%1d  %2d x%1d", $_, $sc{$_}, $special1{$_},
-                                           $sc{$_ . '2'}, $special2{$_})
-} qw(DV INC DR FAB);
-my $speciallist1 = join "\n", map {
-    sprintf("%4s    = %2d x%1d", $_, $sc{$_}, $special1{$_})
-} qw(ALOG CON);
-
-my $lambdadenom = $respnum - $mults{F};
-my $lambda = $mults{F} / $lambdadenom;
-my $WSumC = 0.5 * $mults{FC} + $mults{CF} + 1.5 * $mults{C};
-my ($EBmin, $EBmax);
-if ($WSumC > $mults{M}) {
-    $EBmin = $mults{M};
-    $EBmax = $WSumC;
-}
-else {
-    $EBmin = $WSumC;
-    $EBmax = $mults{M};
-}
-my $EA = $mults{M} + $WSumC;
-my $EBPer = (
-       $lambda < 1.0
-    &&
-       (   (4 <= $EA && $EA <= 10 && $EBmax >= $EBmin + 2)
-        || ($EA > 10 && $EBmax >= $EBmin + 2.5)
-       )
-    && $EBmin != 0
-    ) ? $EBmax / $EBmin : '-';
-#sum(m) and sumFM only include whole determinant components
-#sumC', sumT, sumV, sumY include sub-determinants
-my %detsums;
-my $sumshade = 0;
-foreach my $subdet ("C'", qw(T V Y)) {
-    my $sum = 0;
-    foreach my $det (grep { /$subdet/ } @determinants) {
-        $sum += $mults{$det};
+    my $EA = $mults{M} + $WSumC;
+    my $EBPer = (
+           $lambda < 1.0
+        &&
+           (   (4 <= $EA && $EA <= 10 && $EBmax >= $EBmin + 2)
+            || ($EA > 10 && $EBmax >= $EBmin + 2.5)
+           )
+        && $EBmin != 0
+        ) ? $EBmax / $EBmin : '-';
+    #sum(m) and sumFM only include whole determinant components
+    #sumC', sumT, sumV, sumY include sub-determinants
+    my %detsums;
+    my $sumshade = 0;
+    foreach my $subdet ("C'", qw(T V Y)) {
+        my $sum = 0;
+        foreach my $det (grep { /$subdet/ } @determinants) {
+            $sum += $mults{$det};
+        }
+        $detsums{$subdet} = $sum;
+        $sumshade += $sum;
     }
-    $detsums{$subdet} = $sum;
-    $sumshade += $sum;
-}
-my $eb = $mults{FM} + $mults{m};
-my $es = $eb + $sumshade;
-my $adjes = $es - ($mults{m} > 1 ? $mults{m} - 1 : 0) 
-                - ($detsums{Y} > 1 ? $detsums{Y} - 1 : 0);
+    my $eb = $mults{FM} + $mults{m};
+    my $es = $eb + $sumshade;
+    my $adjes = $es - ($mults{m} > 1 ? $mults{m} - 1 : 0) 
+                    - ($detsums{Y} > 1 ? $detsums{Y} - 1 : 0);
 
-my $d = d_table($EA - $es);
-my $adjd = d_table($EA - $adjes);
+    my $d = d_table($EA - $es);
+    my $adjd = d_table($EA - $adjes);
 
-#print "DEBUG dtable:\n", join "\n", map {
-#      "$_ to " . ($_ + 2) . ": "
-#    . d_table($_) . " and " . d_table($_ + 2)
-#} (13, 10.5, 8, 5.5, 3, -2.5, -5, -7.5, -10, -12.5, -15);
+    #print "DEBUG dtable:\n", join "\n", map {
+    #      "$_ to " . ($_ + 2) . ": "
+    #    . d_table($_) . " and " . d_table($_ + 2)
+    #} (13, 10.5, 8, 5.5, 3, -2.5, -5, -7.5, -10, -12.5, -15);
 
-my $abartay = 2*$sc{AB} + $ccounts{Art} + $ccounts{Ay};
-my $lv2 = $sc{DV2} + $sc{INC2} + $sc{DR2} + $sc{FAB2};
+    my $abartay = 2*$sc{AB} + $ccounts{Art} + $ccounts{Ay};
+    my $lv2 = $sc{DV2} + $sc{INC2} + $sc{DR2} + $sc{FAB2};
 
-my $CFpC = $mults{CF} + $mults{C};
-my $Afr = ($resps[8] + $resps[9] + $resps[10])
-        / (  $resps[1] + $resps[2] + $resps[3] + $resps[4]
-           + $resps[5] + $resps[6] + $resps[7]);
-my $numblends = scalar @blends;
+    my $CFpC = $mults{CF} + $mults{C};
+    my $Afr = ($resps[8] + $resps[9] + $resps[10])
+            / (  $resps[1] + $resps[2] + $resps[3] + $resps[4]
+               + $resps[5] + $resps[6] + $resps[7]);
+    my $numblends = scalar @blends;
 
-my $XAp = ($FQ{p} + $FQ{o} + $FQ{u}) / $respnum;
-my $WDAp = ($WDQ{p} + $WDQ{o} + $WDQ{u}) / ($W + $D);
-my $Xminusp = $FQ{m} / $respnum;
-my $Xplusp = $FQ{p} / $respnum;
-my $Xup =  $FQ{u} / $respnum;
+    my $XAp = ($FQ{p} + $FQ{o} + $FQ{u}) / $respnum;
+    my $WDAp = ($WDQ{p} + $WDQ{o} + $WDQ{u}) / ($W + $D);
+    my $Xminusp = $FQ{m} / $respnum;
+    my $Xplusp = $FQ{p} / $respnum;
+    my $Xup =  $FQ{u} / $respnum;
 
-my $Zd = $ZEst eq '-' ? '-' : ($ZSum - $ZEst);
+    my $Zd = $ZEst eq '-' ? '-' : ($ZSum - $ZEst);
 
-my $human = $ccounts{H}  + $ccounts{'(H)'}
-          + $ccounts{Hd} + $ccounts{'(Hd)'};
-my $isol_index = (  $ccounts{Bt} + 2*$ccounts{Cl} + $ccounts{Ge}
-                  + $ccounts{Ls} + 2*$ccounts{Na}  ) / $respnum;
+    my $human = $ccounts{H}  + $ccounts{'(H)'}
+              + $ccounts{Hd} + $ccounts{'(Hd)'};
+    my $isol_index = (  $ccounts{Bt} + 2*$ccounts{Cl} + $ccounts{Ge}
+                      + $ccounts{Ls} + 2*$ccounts{Na}  ) / $respnum;
 
-my $frrf = $mults{Fr} + $mults{rF};
-my $egocentricity = (3*$frrf + $twos) / $respnum;
-my $anxy = $ccounts{An} + $ccounts{Xy};
-my $hhdhd = $ccounts{'(H)'} + $ccounts{Hd} + $ccounts{'(Hd)'};
+    my $frrf = $mults{Fr} + $mults{rF};
+    my $egocentricity = (3*$frrf + $twos) / $respnum;
+    my $anxy = $ccounts{An} + $ccounts{Xy};
+    my $hhdhd = $ccounts{'(H)'} + $ccounts{Hd} + $ccounts{'(Hd)'};
 
-my $colshade = !! grep {   / C ([^']|$) .* (T|Y|V|C') /x
-                        || / (T|Y|V|C') .* C ([^']|$) /x } @blends;
-my $pti = ($XAp < 0.70 && $WDAp < 0.75)
-        + ($Xminusp > 0.29)
-        + ($lv2 > 2 && $sc{FAB2} > 0)
-        + (   ($respnum < 17 && $weight6 > 12)
-           || ($respnum > 16 && $weight6 > 17) )
-        + ($MQ{m} > 1 || $Xminusp > 0.40);
-my $depi = ($mults{FV} + $mults{VF} + $mults{V} > 0 || $mults{FD} > 2)
-         + ($colshade || $S > 2)
-         + ( ($egocentricity > 0.44 && $frrf == 0) || $egocentricity < 0.33 )
-         + ($Afr < 0.46 || $numblends < 4)
-         + ($sumshade > $eb || $detsums{"C'"} > 2)
-         + ($sc{MOR} > 2 || $abartay > 3)
-         + ($sc{COP} < 2 || $isol_index > 0.24);
-my $cdi = ($EA < 6 || $adjd < 0)
-        + ($sc{COP} < 2 && $sc{AG} < 2)
-        + ($WSumC < 2.5 || $Afr < 0.46)
-        + ($ap{p} > $ap{a}+1 || $ccounts{H} < 2)
-        + ($detsums{T} > 1 || $isol_index > 0.24 || $ccounts{Fd} > 0);
-my $scons = ($mults{FV} + $mults{VF} + $mults{V} + $mults{FD} > 2)
-          + $colshade
-          + ($egocentricity > 0.44 || $egocentricity < 0.31)
-          + ($sc{MOR} > 3)
-          + ($Zd > 3.5 || $Zd < -3.5)
-          + ($es > $EA)
-          + ($CFpC > $mults{FC})
-          + ($Xplusp < 0.70)
-          + ($S > 3)
-          + ($popular < 3 || $popular > 8)
-          + ($ccounts{H} < 2)
-          + ($respnum < 17);
-my $hdad = $ccounts{Hd} + $ccounts{Ad};
-my $haratio = ($hdad != 0) ? ($ccounts{H} + $ccounts{A}) / $hdad : 0;
-my $hvisubs = ($Zf > 12)
-            + ($Zd > 3.5)
-            + ($S > 3)
-            + ($ccounts{H} + $hhdhd > 6)
-            + (  $ccounts{'(H)'} + $ccounts{'(A)'} + $ccounts{'(Hd)'}
-               + $ccounts{'(Ad)'} > 3 )
-            + ($haratio < 4)
-            + ($ccounts{Cg} > 3);
-my $hvi = ($detsums{T} == 0 && $hvisubs >= 4) ? 'Yes' : 'No';
-my $obssum1_4 = ($Dd > 3)
-              + ($Zf > 12)
-              + ($Zd > 3.0)
-              + ($popular > 7);
-my $obssum1_5 = $obssum1_4 + ($FQ{p} > 1);
-my $obs = (  $obssum1_5 == 5
-          || ($obssum1_4 >= 2 && $FQ{p} > 3)
-          || ($obssum1_5 >= 3 && $Xplusp > 0.89)
-          || ($FQ{p} > 3 && $Xplusp > 0.89) ) ? 'Yes' : 'No';
+    my $colshade = !! grep {   / C ([^']|$) .* (T|Y|V|C') /x
+                            || / (T|Y|V|C') .* C ([^']|$) /x } @blends;
+    my $pti = ($XAp < 0.70 && $WDAp < 0.75)
+            + ($Xminusp > 0.29)
+            + ($lv2 > 2 && $sc{FAB2} > 0)
+            + (   ($respnum < 17 && $weight6 > 12)
+               || ($respnum > 16 && $weight6 > 17) )
+            + ($MQ{m} > 1 || $Xminusp > 0.40);
+    my $depi = ($mults{FV} + $mults{VF} + $mults{V} > 0 || $mults{FD} > 2)
+             + ($colshade || $S > 2)
+             + ( ($egocentricity > 0.44 && $frrf == 0) || $egocentricity < 0.33 )
+             + ($Afr < 0.46 || $numblends < 4)
+             + ($sumshade > $eb || $detsums{"C'"} > 2)
+             + ($sc{MOR} > 2 || $abartay > 3)
+             + ($sc{COP} < 2 || $isol_index > 0.24);
+    my $cdi = ($EA < 6 || $adjd < 0)
+            + ($sc{COP} < 2 && $sc{AG} < 2)
+            + ($WSumC < 2.5 || $Afr < 0.46)
+            + ($ap{p} > $ap{a}+1 || $ccounts{H} < 2)
+            + ($detsums{T} > 1 || $isol_index > 0.24 || $ccounts{Fd} > 0);
+    my $scons = ($mults{FV} + $mults{VF} + $mults{V} + $mults{FD} > 2)
+              + $colshade
+              + ($egocentricity > 0.44 || $egocentricity < 0.31)
+              + ($sc{MOR} > 3)
+              + ($Zd > 3.5 || $Zd < -3.5)
+              + ($es > $EA)
+              + ($CFpC > $mults{FC})
+              + ($Xplusp < 0.70)
+              + ($S > 3)
+              + ($popular < 3 || $popular > 8)
+              + ($ccounts{H} < 2)
+              + ($respnum < 17);
+    my $hdad = $ccounts{Hd} + $ccounts{Ad};
+    my $haratio = ($hdad != 0) ? ($ccounts{H} + $ccounts{A}) / $hdad : 0;
+    my $hvisubs = ($Zf > 12)
+                + ($Zd > 3.5)
+                + ($S > 3)
+                + ($ccounts{H} + $hhdhd > 6)
+                + (  $ccounts{'(H)'} + $ccounts{'(A)'} + $ccounts{'(Hd)'}
+                   + $ccounts{'(Ad)'} > 3 )
+                + ($haratio < 4)
+                + ($ccounts{Cg} > 3);
+    my $hvi = ($detsums{T} == 0 && $hvisubs >= 4) ? 'Yes' : 'No';
+    my $obssum1_4 = ($Dd > 3)
+                  + ($Zf > 12)
+                  + ($Zd > 3.0)
+                  + ($popular > 7);
+    my $obssum1_5 = $obssum1_4 + ($FQ{p} > 1);
+    my $obs = (  $obssum1_5 == 5
+              || ($obssum1_4 >= 2 && $FQ{p} > 3)
+              || ($obssum1_5 >= 3 && $Xplusp > 0.89)
+              || ($FQ{p} > 3 && $Xplusp > 0.89) ) ? 'Yes' : 'No';
 
-foreach (@special0) {
-    $sc{$_} = sprintf("%2d", $sc{$_}||0);
-}
+    foreach (@special0) {
+        $sc{$_} = sprintf("%2d", $sc{$_}||0);
+    }
 
-print <<END;
+    return <<END;
 Location Features:
 Zf      = $Zf
 ZSum    = $ZSum
@@ -472,6 +477,7 @@ S-Con   = $scons
 HVI     = $hvi
 OBS     = $obs
 END
+}
 
 sub d_table {
     my ($input) = @_;
