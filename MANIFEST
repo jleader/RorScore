@@ -1,0 +1,12 @@
+bin/rorschach.pl
+Build.PL
+MANIFEST			This list of files
+README
+t/01script.t
+t/data/01input.txt
+t/data/01output-expected.txt
+t/data/02input.txt
+t/data/02output-expected.txt
+t/data/03input.txt
+t/data/03output-expected.txt
+TODO
