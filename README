@@ -50,7 +50,8 @@ SEE ALSO:
 
 A similar service is offered by http://www.virtualpsychology.com/, but
 theirs is on-line only, using a web interface to enter the data, and
-requires signing up for an account, and as far as I can tell is not open
+requires signing up for an account. As far as I can tell their code is
+not open
 source. Theirs also does more detailed validation of the codes against
 each other (checking to see if codes in different columns are consistent
 with each other).
