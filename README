@@ -1,6 +1,6 @@
 DESCRIPTION:
 
-This is a relatively quick-and-dirty script to create a strctural
+This is a relatively quick-and-dirty script to create a structural
 summary from a score sheet for a Rorschach ink-blot test using Exner's
 "Comprehensive System". The input is a score sheet as a tab-delimited
 text file (which can be created by Excel or any other spreadsheet
@@ -20,7 +20,7 @@ line doesn't start with "card", it's assumed that there's no header line,
 and the first line is assumed to be the first response.
 
 The first response for each card must have the card number in upper-case
-roman numerals (i.e. I, II, III, IV, etc) or hindu-arabic numerals (i.e.
+roman numerals (i.e. I, II, III, IV, etc.) or Hindu-Arabic numerals (i.e.
 1, 2, 3, 4, etc.). Subsequent responses for the same card can leave the
 card number blank, or can repeat the same card number.
 
@@ -51,10 +51,9 @@ SEE ALSO:
 A similar service is offered by http://www.virtualpsychology.com/, but
 theirs is on-line only, using a web interface to enter the data, and
 requires signing up for an account. As far as I can tell their code is
-not open
-source. Theirs also does more detailed validation of the codes against
-each other (checking to see if codes in different columns are consistent
-with each other).
+not open source. Theirs also does more detailed validation of the codes
+against each other (checking to see if codes in different columns are
+consistent with each other).
 
 Another similar product is ROR-SCAN (http://ror-scan.com/index2.htm),
 which is commercial shrink-wrap software, and has been around since 1988.
